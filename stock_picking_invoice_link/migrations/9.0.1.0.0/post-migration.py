@@ -3,7 +3,7 @@
 
 from openupgradelib import openupgrade, openupgrade_90
 
-@openupgrade.migrate()
+@openupgrade.migrate(use_env=True)
 def migrate(env, version):
     # Link stock moves with invoice lines according old link
     openupgrade.logged_query(
