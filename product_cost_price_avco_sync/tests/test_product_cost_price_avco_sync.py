@@ -11,66 +11,65 @@ _logger = logging.getLogger(__name__)
 
 @tagged("-at_install", "post_install")
 class TestProductCostPriceAvcoSync(TransactionCase):
-    @classmethod
-    def setUpClass(cls):
-        super(TestProductCostPriceAvcoSync, cls).setUpClass()
-        cls.StockPicking = cls.env["stock.picking"]
-        cls.supplier_location = cls.env.ref("stock.stock_location_suppliers")
-        cls.customer_location = cls.env.ref("stock.stock_location_customers")
-        cls.warehouse = cls.env.ref("stock.warehouse0")
-        cls.stock_location = cls.env.ref("stock.stock_location_stock")
-        cls.picking_type_in = cls.env.ref("stock.picking_type_in")
-        cls.picking_type_out = cls.env.ref("stock.picking_type_out")
-        cls.partner = cls.env["res.partner"].create({"name": "Test Partner"})
-        cls.categ_all = cls.env.ref("product.product_category_all")
-        cls.categ_all.property_cost_method = "average"
-        cls.product = cls.env["product.product"].create(
+    def setUp(self):
+        super(TestProductCostPriceAvcoSync, self).setUp()
+        self.StockPicking = self.env["stock.picking"]
+        self.supplier_location = self.env.ref("stock.stock_location_suppliers")
+        self.customer_location = self.env.ref("stock.stock_location_customers")
+        self.warehouse = self.env.ref("stock.warehouse0")
+        self.stock_location = self.env.ref("stock.stock_location_stock")
+        self.picking_type_in = self.env.ref("stock.picking_type_in")
+        self.picking_type_out = self.env.ref("stock.picking_type_out")
+        self.partner = self.env["res.partner"].create({"name": "Test Partner"})
+        self.categ_all = self.env.ref("product.product_category_all")
+        self.categ_all.property_cost_method = "average"
+        self.product = self.env["product.product"].create(
             {
                 "name": "Product for test",
                 "type": "product",
                 "tracking": "none",
                 "standard_price": 1,
-                "categ_id": cls.categ_all.id,
+                "categ_id": self.categ_all.id,
             }
         )
-        cls.picking_in = cls.env["stock.picking"].create(
+        self.picking_in = self.env["stock.picking"].create(
             {
-                "picking_type_id": cls.picking_type_in.id,
-                "location_id": cls.supplier_location.id,
-                "location_dest_id": cls.stock_location.id,
+                "picking_type_id": self.picking_type_in.id,
+                "location_id": self.supplier_location.id,
+                "location_dest_id": self.stock_location.id,
                 "move_lines": [
                     (
                         0,
                         0,
                         {
                             "name": "a move",
-                            "product_id": cls.product.id,
+                            "product_id": self.product.id,
                             "product_uom_qty": 10.0,
-                            "product_uom": cls.product.uom_id.id,
-                            "location_id": cls.supplier_location.id,
-                            "location_dest_id": cls.stock_location.id,
+                            "product_uom": self.product.uom_id.id,
+                            "location_id": self.supplier_location.id,
+                            "location_dest_id": self.stock_location.id,
                         },
                     )
                 ],
             }
         )
 
-        cls.picking_out = cls.env["stock.picking"].create(
+        self.picking_out = self.env["stock.picking"].create(
             {
-                "picking_type_id": cls.picking_type_out.id,
-                "location_id": cls.stock_location.id,
-                "location_dest_id": cls.customer_location.id,
+                "picking_type_id": self.picking_type_out.id,
+                "location_id": self.stock_location.id,
+                "location_dest_id": self.customer_location.id,
                 "move_lines": [
                     (
                         0,
                         0,
                         {
                             "name": "a move",
-                            "product_id": cls.product.id,
+                            "product_id": self.product.id,
                             "product_uom_qty": 5.0,
-                            "product_uom": cls.product.uom_id.id,
-                            "location_id": cls.stock_location.id,
-                            "location_dest_id": cls.customer_location.id,
+                            "product_uom": self.product.uom_id.id,
+                            "location_id": self.stock_location.id,
+                            "location_dest_id": self.customer_location.id,
                         },
                     )
                 ],
